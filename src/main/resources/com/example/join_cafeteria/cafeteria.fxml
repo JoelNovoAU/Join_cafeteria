@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.join_cafeteria.ControladorCafeteria"
+            style="-fx-background-color: #FFF5E1;"> <!-- Fondo cálido tipo cafetería -->
+
+    <!-- Título arriba -->
+    <top>
+        <Label text="Cafetería NoVoToAsT"
+               BorderPane.alignment="CENTER"
+               alignment="CENTER"
+               style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #6B4226; -fx-padding: 20 0 20 0;"/>
+    </top>
+
+    <!-- Área de eventos en el centro -->
+    <center>
+        <TextArea fx:id="areaEventos"
+                  editable="false"
+                  wrapText="true"
+                  style="-fx-font-size: 14px; -fx-background-color: #FFF8E7; -fx-border-color: #D4A373; -fx-border-radius: 5; -fx-background-radius: 5;"
+                  prefHeight="300"
+                  prefWidth="500"/>
+    </center>
+
+    <!-- Botón bonito abajo -->
+    <bottom>
+        <HBox alignment="CENTER">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+            <Button fx:id="botonIniciar"
+                    text="Iniciar Simulación"
+                    onAction="#iniciarSimulacion"
+                    style="-fx-background-color: #D4A373;
+                           -fx-text-fill: white;
+                           -fx-font-size: 16px;
+                           -fx-font-weight: bold;
+                           -fx-background-radius: 15;
+                           -fx-cursor: hand;"
+                    prefHeight="50"
+                    prefWidth="250"/>
+        </HBox>
+    </bottom>
+</BorderPane>
