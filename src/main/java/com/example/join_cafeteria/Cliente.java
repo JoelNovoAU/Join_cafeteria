@@ -16,12 +16,8 @@ public class Cliente implements Runnable {
 
     @Override
     public void run() {
-        cafeteria.mostrarEvento(nombre + " entra a la cafetería y pide un café", ControladorCafeteria.TipoEvento.INFO);
+        cafeteria.mostrarEvento(nombre + " entra a la cafetería y pide un café");
         boolean atendido = cafeteria.solicitarCafe(this);
-        if (!atendido) {
-            cafeteria.clienteSeFue(this, false);
-        } else {
-            cafeteria.clienteSeFue(this, true);
-        }
+        cafeteria.clienteSeFue(this, atendido);
     }
 }
