@@ -40,7 +40,6 @@
         </VBox>
     </top>
 
-    <!-- Center: Eventos estilizados -->
     <center>
         <ScrollPane fx:id="scrollEventos"
                     fitToWidth="true"
@@ -55,7 +54,6 @@
         </ScrollPane>
     </center>
 
-    <!-- Bottom: Botón de inicio -->
     <bottom>
         <HBox alignment="CENTER">
             <padding>
