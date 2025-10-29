@@ -9,7 +9,7 @@ public class Launcher extends Application {
     public void start(Stage stage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("cafeteria.fxml"));
         Scene scene = new Scene(loader.load(), 600, 400);
-        stage.setTitle("Cafetetira NoVoToAsT");
+        stage.setTitle("Cafetetira Novotoast");
         stage.setScene(scene);
         stage.show();
     }

@@ -11,20 +11,17 @@ public class Cliente implements Runnable {
         this.cafeteria = cafeteria;
     }
 
-    public String getNombre() {
-        return nombre;
-    }
-
-    public int getTiempoEspera() {
-        return tiempoEspera;
-    }
+    public String getNombre() { return nombre; }
+    public int getTiempoEspera() { return tiempoEspera; }
 
     @Override
     public void run() {
-        cafeteria.mostrarEvento(nombre + " entra a la cafetería y pide un café ");
+        cafeteria.mostrarEvento(nombre + " entra a la cafetería y pide un café", ControladorCafeteria.TipoEvento.INFO);
         boolean atendido = cafeteria.solicitarCafe(this);
         if (!atendido) {
-            cafeteria.mostrarEvento(nombre + " se ha ido  (esperó demasiado tiempo)");
+            cafeteria.clienteSeFue(this, false);
+        } else {
+            cafeteria.clienteSeFue(this, true);
         }
     }
 }

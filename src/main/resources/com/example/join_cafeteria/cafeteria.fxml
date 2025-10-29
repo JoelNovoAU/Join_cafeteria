@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.*?>
@@ -7,27 +6,56 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.join_cafeteria.ControladorCafeteria"
-            style="-fx-background-color: #FFF5E1;"> <!-- Fondo cálido tipo cafetería -->
+            style="-fx-background-color: #FFF5E1;">
 
-    <!-- Título arriba -->
     <top>
-        <Label text="Cafetería NoVoToAsT"
-               BorderPane.alignment="CENTER"
-               alignment="CENTER"
-               style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #6B4226; -fx-padding: 20 0 20 0;"/>
+        <VBox alignment="CENTER" spacing="10">
+            <Label text="Cafetería Novotoast"
+                   alignment="CENTER"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #6B4226; -fx-padding: 20 0 10 0;"/>
+
+            <HBox alignment="CENTER" spacing="30">
+                <VBox fx:id="cardContentos"
+                      alignment="CENTER"
+                      spacing="3"
+                      style="-fx-background-color: #DFF5E1; -fx-border-color: #A3D79C; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10;">
+                    <Label text="😊 Clientes contentos"
+                           style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #3C763D;"/>
+                    <Label fx:id="labelContentos" text="0"
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #3C763D;"/>
+                </VBox>
+
+                <VBox fx:id="cardEnfadados"
+                      alignment="CENTER"
+                      spacing="3"
+                      style="-fx-background-color: #FADBD8; -fx-border-color: #E57373; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 10;">
+                    <Label text="😡 Clientes enfadados"
+                           style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #A94442;"/>
+                    <Label fx:id="labelEnfadados" text="0"
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #A94442;"/>
+                </VBox>
+            </HBox>
+
+            <Region prefHeight="10"/>
+        </VBox>
     </top>
 
-    <!-- Área de eventos en el centro -->
+    <!-- Center: Eventos estilizados -->
     <center>
-        <TextArea fx:id="areaEventos"
-                  editable="false"
-                  wrapText="true"
-                  style="-fx-font-size: 14px; -fx-background-color: #FFF8E7; -fx-border-color: #D4A373; -fx-border-radius: 5; -fx-background-radius: 5;"
-                  prefHeight="300"
-                  prefWidth="500"/>
+        <ScrollPane fx:id="scrollEventos"
+                    fitToWidth="true"
+                    style="-fx-background: #FFF8E7; -fx-border-color: #D4A373; -fx-border-radius: 5; -fx-background-radius: 5;"
+                    prefHeight="300"
+                    prefWidth="500">
+            <VBox fx:id="vboxEventos" spacing="5">
+                <padding>
+                    <Insets top="5" right="5" bottom="5" left="5"/>
+                </padding>
+            </VBox>
+        </ScrollPane>
     </center>
 
-    <!-- Botón bonito abajo -->
+    <!-- Bottom: Botón de inicio -->
     <bottom>
         <HBox alignment="CENTER">
             <padding>

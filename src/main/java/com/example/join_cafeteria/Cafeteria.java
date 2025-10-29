@@ -29,11 +29,7 @@ public class Cafeteria {
 
     public synchronized Cliente obtenerSiguienteCliente() {
         while (colaClientes.isEmpty() && abierta) {
-            try {
-                wait();
-            } catch (InterruptedException e) {
-                return null;
-            }
+            try { wait(); } catch (InterruptedException e) { return null; }
         }
         if (!abierta && colaClientes.isEmpty()) return null;
         Cliente cliente = colaClientes.poll();
@@ -46,9 +42,22 @@ public class Cafeteria {
         notifyAll();
     }
 
-    public void mostrarEvento(String mensaje) {
-        if (controlador != null) controlador.agregarEvento(mensaje);
+    public void mostrarEvento(String mensaje, ControladorCafeteria.TipoEvento tipo) {
+        if (controlador != null) controlador.agregarEvento(mensaje, tipo);
         System.out.println(mensaje);
     }
-}
 
+    public void clienteSeFue(Cliente cliente, boolean atendido) {
+        if (atendido) {
+            if (controlador != null) {
+                controlador.clienteContento();
+                mostrarEvento(cliente.getNombre() + " ha sido atendido", ControladorCafeteria.TipoEvento.CLIENTE_CONTENTO);
+            }
+        } else {
+            if (controlador != null) {
+                controlador.clienteEnfadado();
+                mostrarEvento(cliente.getNombre() + " se ha ido (esperó demasiado tiempo)", ControladorCafeteria.TipoEvento.CLIENTE_ENFADADO);
+            }
+        }
+    }
+}
