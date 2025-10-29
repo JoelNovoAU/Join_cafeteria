@@ -1,0 +1,160 @@
+\documentclass[12pt,a4paper]{article}  
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage{enumitem}  
+\usepackage{lmodern}
+
+\geometry{margin=2.5cm}
+\setlist[itemize]{topsep=4pt, itemsep=2pt, leftmargin=1.5em}
+
+\title{Documentacion del Proyecto: Simulación de Cafetería con Hilos en JavaFX}
+\author{Autor: Joel Novo Pampillón}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Introducción del Proyecto}
+En este proyecto desarrollaremos una aplicacion la cual simulara una cafeteria. El principal objetivo es que con Thread(hilos) podamos gestionar multiples pedidos de clientes de manera simultanea, optimizando el tiempo de espera y mejorando la eficiencia del servicio.
+Para esto hemos utilizado JavaFx
+
+\section{Arquitectura del Sistema}
+
+\subsection{Modelo}
+
+
+\subsubsection*{Clases y responsabilidades}
+
+\begin{itemize}
+    \item \textbf{Cliente}
+    \begin{itemize}
+        \item Representa a un cliente con nombre y tiempo de espera.
+        \item Implementa \texttt{Runnable} $\rightarrow$ cada cliente corre en su propio hilo.
+        \item Pide un café y espera hasta que se lo entreguen o se marche.
+    \end{itemize}
+
+    \item \textbf{Camarero}
+    \begin{itemize}
+        \item Extiende \texttt{Thread}.
+        \item Atiende a los clientes en orden.
+        \item Simula el tiempo de preparación con \texttt{Thread.sleep()}.
+    \end{itemize}
+
+    \item \textbf{Cafeteria}
+    \begin{itemize}
+        \item Gestiona la cola de clientes (\texttt{Queue}).
+        \item Sincroniza la interacción entre camareros y clientes.
+        \item Controla el estado (abierta o cerrada).
+        \item Comunica eventos al controlador (interfaz).
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Conceptos de programación concurrente:}
+\begin{itemize}
+    \item Uso de \texttt{synchronized}, \texttt{wait()} y \texttt{notifyAll()} para coordinar hilos.
+    \item Evita condiciones de carrera.
+    \item Controla cuándo los clientes se van si esperan demasiado.
+\end{itemize}
+
+\subsection{Vista (\texttt{cafeteria.fxml})}
+
+Define la interfaz en \texttt{FXML}
+\begin{itemize}
+    \item Un \texttt{TextArea} para mostrar eventos de la simulación.
+    \item Un \texttt{Button} para iniciar la simulación.
+\end{itemize}
+
+\paragraph{Ventajas:}
+\begin{itemize}
+    \item Separa la parte visual del código Java.
+    \item Facilita cambiar el diseño sin tocar la lógica.
+\end{itemize}
+
+\subsection{Controlador (\texttt{ControladorCafeteria.java})}
+
+Conecta la vista con el modelo:
+\begin{itemize}
+    \item Inicializa la clase \texttt{Cafeteria}.
+    \item Responde al clic del botón \textit{Iniciar simulación}.
+    \item Crea y lanza los hilos (\texttt{Camarero}, \texttt{Cliente}).
+    \item Actualiza la interfaz con los eventos mediante \texttt{Platform.runLater}.
+\end{itemize}
+
+Esto permite que la interfaz siga funcionando aunque la simulación corra en segundo plano.
+
+\subsection{Launcher (\texttt{App.java})}
+
+\begin{itemize}
+    \item Carga el archivo \texttt{FXML} desde los recursos.
+    \item Muestra la ventana principal.
+    \item Configura el título y el tamaño.
+\end{itemize}
+
+\section{Casos de Uso}
+
+\begin{longtable}{|c|l|l|l|l|}
+\hline
+\textbf{ID} & \textbf{Caso de Uso} & \textbf{Actor} & \textbf{Flujo Principal}  \\ \hline
+CU1 & Entrar a la cafetería & Cliente & Llega, se agrega a la cola y espera café  \\ \hline
+CU2 & Preparar café & Camarero & Obtiene cliente, prepara café, entrega y notifica \\ \hline
+CU3 & Recibir café & Cliente & Despierta, recibe café y muestra mensaje  \\ \hline
+CU4 & Cliente se va & Cliente & Supera tiempo de espera y se retira  \\ \hline
+CU5 & Iniciar simulación & Usuario & Se crean hilos de clientes y camareros   \\ \hline
+CU6 & Cierre de cafetería & Sistema & Cafetería se cierra y camareros finalizan \\ \hline
+\label{tab:casos_uso}
+\end{longtable}
+
+\section{Interfaz}
+
+La interfaz gráfica del proyecto fue desarrollada utilizando \texttt{JavaFX} y definida mediante el archivo \texttt{cafeteria.fxml}. Su diseño busca representar de forma visual y dinámica el funcionamiento interno de la simulación, permitiendo observar los eventos que ocurren en tiempo real.
+
+\subsection*{Elementos principales de la interfaz}
+
+\begin{itemize}
+    \item \textbf{Título de la ventana:} Muestra el nombre del proyecto \textit{``Cafeteria Novotoast''}, proporcionando un contexto claro al usuario.
+    
+    \item \textbf{Área de logs (\texttt{TextArea}):} 
+    \begin{itemize}
+        \item Presenta los eventos de la simulación en tiempo real, como la llegada de clientes, la preparación de cafés y los clientes que se van.
+        \item Cada línea representa una acción o cambio de estado dentro de la cafetería.
+    \end{itemize}
+    
+    \item \textbf{Contadores de estado:}
+    \begin{itemize}
+        \item \texttt{Label clientes contentos:} Muestra la cantidad de clientes que recibieron su café correctamente.
+        \item \texttt{Label clientes enfadados:} Indica el número de clientes que abandonaron la cafetería por  espera.
+        \item Ambos contadores se actualizan automáticamente conforme avanza la simulación.
+    \end{itemize}
+
+    \item \textbf{Botón de inicio (\texttt{Button Iniciar Simulación}):}
+    \begin{itemize}
+        \item Inicia el proceso de simulación al ser presionado.
+        \item Desactiva temporalmente el botón mientras la simulación está en ejecución para evitar reinicios múltiples.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Diseño y organización}
+
+La disposición de los elementos se estructura de forma vertical para una lectura intuitiva:
+\begin{itemize}
+    \item En la parte superior: el título principal.
+    \item Justo debajo: los contadores de clientes contentos y enfadados.
+    \item En el centro: el área de logs.
+    \item Al final: el botón para iniciar la simulación.
+\end{itemize}
+
+Este diseño busca simplicidad y funcionalidad, centrando la atención del usuario en los eventos del sistema.
+
+\section{Conclusiones}
+\begin{itemize}
+    \item Se implementó una simulación de cafetería con multihilos y JavaFX.
+    \item La coordinación de clientes y camareros se logró con \texttt{wait()} y \texttt{notifyAll()}.
+\end{itemize}
+
+\end{document}
