@@ -1,0 +1,170 @@
+\documentclass[12pt,a4paper]{article}  
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish]{babel}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage{enumitem}  
+\usepackage{lmodern}
+
+\geometry{margin=2.5cm}
+\setlist[itemize]{topsep=4pt, itemsep=2pt, leftmargin=1.5em}
+
+\title{Documentación del Proyecto: Simulación de Cafetería con Hilos y JavaFX}
+\author{Autor: Joel Novo Pampillón}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section*{Introducción}
+
+Este proyecto consiste en una simulación de una cafetería usando Java y JavaFX. La idea principal es representar cómo se gestionan los pedidos de múltiples clientes al mismo tiempo usando hilos (Threads), de manera que la preparación y entrega de cafés se haga de forma eficiente y organizada.
+
+Se introducen dos roles principales en la cafetería: los \textbf{baristas}, que preparan los cafés, y los \textbf{camareros}, que los sirven a los clientes. Para organizar la entrega de los cafés, se utiliza un \textbf{buffer}, un espacio donde los cafés preparados esperan a ser servidos. Todo esto permite visualizar de forma dinámica el flujo de clientes, preparación y entrega de cafés en tiempo real.
+
+
+\section{Arquitectura del Sistema}
+
+\subsection{Modelo}
+
+\subsubsection*{Clases y responsabilidades}
+
+\begin{itemize}
+    \item \textbf{Cliente}
+    \begin{itemize}
+        \item Representa a un cliente con nombre y tiempo máximo de espera.
+        \item Implementa \texttt{Runnable} para correr en su propio hilo.
+        \item Pide un café y espera a que se lo sirvan, o se va enfadado si tarda demasiado.
+    \end{itemize}
+
+    \item \textbf{Camarero}
+    \begin{itemize}
+        \item Extiende \texttt{Thread}.
+        \item Toma cafés listos del buffer y los entrega a los clientes.
+        \item Si no hay cafés listos, espera hasta que un barista prepare uno.
+    \end{itemize}
+
+    \item \textbf{Barista}
+    \begin{itemize}
+        \item Extiende \texttt{Thread}.
+        \item Prepara cafés para los clientes en orden.
+        \item Coloca los cafés en el buffer para que los camareros los sirvan.
+        \item Si el buffer está lleno, espera hasta que haya espacio.
+    \end{itemize}
+
+    \item \textbf{Cafetería}
+    \begin{itemize}
+        \item Gestiona la cola de clientes que esperan su café.
+        \item Mantiene la sincronización entre clientes, baristas y camareros.
+        \item Controla si la cafetería está abierta o cerrada.
+        \item Envía eventos al controlador para actualizar la interfaz.
+    \end{itemize}
+
+    \item \textbf{Buffer de cafés}
+    \begin{itemize}
+        \item Espacio donde se colocan los cafés ya preparados.
+        \item Evita que los baristas sobreproduzcan y que los camareros sirvan cafés que no están listos.
+        \item Tiene capacidad limitada para simular la “mesa” de cafés listos.
+    \end{itemize}
+\end{itemize}
+
+\paragraph{Conceptos de programación concurrente:}
+\begin{itemize}
+    \item Uso de \texttt{synchronized}, \texttt{wait()} y \texttt{notifyAll()} para coordinar los hilos.
+    \item Se asegura que los clientes solo reciban su café si está listo y dentro de su tiempo de espera.
+    \item Evita que los baristas o camareros trabajen sobre recursos que no están disponibles.
+\end{itemize}
+
+
+\subsection{Vista (\texttt{cafeteria.fxml})}
+
+La interfaz está desarrollada con JavaFX y definida mediante FXML:
+
+\begin{itemize}
+    \item Un área para mostrar los eventos en tiempo real.
+    \item Contadores para clientes contentos y enfadados.
+    \item Un botón para iniciar la simulación.
+\end{itemize}
+
+\paragraph{Ventajas:}
+\begin{itemize}
+    \item Separa la lógica del modelo de la visualización.
+    \item Permite ver el flujo de clientes y cafés de manera clara.
+\end{itemize}
+
+
+\subsection{Controlador (\texttt{ControladorCafeteria.java})}
+
+\begin{itemize}
+    \item Inicializa la clase \texttt{Cafetería} y el buffer de cafés.
+    \item Responde al botón de iniciar simulación.
+    \item Crea y lanza los hilos de clientes, baristas y camareros.
+    \item Actualiza la interfaz con los eventos usando \texttt{Platform.runLater}.
+\end{itemize}
+
+\paragraph{Flujo principal:}
+\begin{enumerate}
+    \item Se crean clientes y se agregan a la cola de la cafetería.
+    \item Los baristas preparan los cafés y los colocan en el buffer.
+    \item Los camareros toman los cafés del buffer y se los entregan a los clientes.
+    \item Se registran eventos en la interfaz y se actualizan los contadores.
+\end{enumerate}
+
+
+\subsection{Launcher (\texttt{Launcher.java})}
+
+\begin{itemize}
+    \item Carga el archivo FXML desde los recursos.
+    \item Muestra la ventana principal con título y tamaño configurados.
+    \item Permite iniciar la simulación desde la interfaz.
+\end{itemize}
+
+
+\section{Casos de Uso}
+
+\begin{longtable}{|c|l|l|l|}
+\hline
+\textbf{ID} & \textbf{Caso de Uso} & \textbf{Actor} & \textbf{Flujo Principal}  \\ \hline
+CU1 & Entrar a la cafetería & Cliente & Llega, se agrega a la cola y espera café  \\ \hline
+CU2 & Preparar café & Barista & Toma cliente de la cola, prepara café y lo coloca en el buffer \\ \hline
+CU3 & Servir café & Camarero & Toma café del buffer y se lo entrega al cliente \\ \hline
+CU4 & Recibir café & Cliente & Cliente recibe su café y se marca como contento \\ \hline
+CU5 & Cliente se va & Cliente & Supera tiempo de espera y se retira enfadado \\ \hline
+CU6 & Iniciar simulación & Usuario & Se crean hilos de clientes, baristas y camareros \\ \hline
+CU7 & Cierre de cafetería & Sistema & Cafetería se cierra y todos los hilos finalizan \\ \hline
+\end{longtable}
+
+
+\section{Interfaz}
+
+\subsection*{Elementos principales}
+
+\begin{itemize}
+    \item \textbf{Título de la ventana:} Cafetería Novotoast.
+    \item \textbf{Área de eventos:} Muestra la llegada de clientes, preparación de cafés y entrega en tiempo real.
+    \item \textbf{Contadores:} Clientes contentos y enfadados, actualizados automáticamente.
+    \item \textbf{Botón de inicio:} Inicia la simulación y se desactiva mientras se ejecuta.
+\end{itemize}
+
+\subsection*{Diseño}
+
+\begin{itemize}
+    \item Disposición vertical: título, contadores, área de eventos y botón.
+    \item Facilita seguir la simulación y ver cómo se mueven los clientes y los cafés.
+\end{itemize}
+
+
+\section{Conclusiones}
+
+\begin{itemize}
+    \item Se implementó una simulación de cafetería con hilos usando JavaFX.
+    \item La introducción de baristas y buffer permite gestionar múltiples cafés de forma organizada.
+    \item La coordinación entre clientes, baristas y camareros se realiza con \texttt{wait()} y \texttt{notifyAll()} para evitar conflictos.
+    \item La interfaz muestra claramente la preparación y entrega de cafés, así como los clientes que se van contentos o enfadados.
+\end{itemize}
+
+\end{document}
