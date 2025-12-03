@@ -25,6 +25,7 @@ public class ControladorCafeteria {
     private ScrollPane scrollEventos;
 
     private Cafeteria cafeteria;
+    private BufferCafes buffer;
 
     private int clientesContentos = 0;
     private int clientesEnfadados = 0;
@@ -33,12 +34,14 @@ public class ControladorCafeteria {
         CLIENTE_CONTENTO,
         CLIENTE_ENFADADO,
         CAMARERO,
+        BARISTA,
         INFO
     }
 
     @FXML
     private void initialize() {
         cafeteria = new Cafeteria(this);
+        buffer = new BufferCafes(3);
     }
 
     @FXML
@@ -47,9 +50,13 @@ public class ControladorCafeteria {
         agregarEvento("Bienvenido a Cafetería NoVoToAsT", TipoEvento.INFO);
 
         new Thread(() -> {
-            Camarero c1 = new Camarero("Camarero Juan", cafeteria);
-            Camarero c2 = new Camarero("Camarera Ana", cafeteria);
+            Barista b1 = new Barista("Barista Laura", cafeteria, buffer);
+            Barista b2 = new Barista("Barista Miguel", cafeteria, buffer);
+            b1.start();
+            b2.start();
 
+            Camarero c1 = new Camarero("Camarero Juan", cafeteria, buffer);
+            Camarero c2 = new Camarero("Camarera Ana", cafeteria, buffer);
             c1.start();
             c2.start();
 
@@ -84,7 +91,7 @@ public class ControladorCafeteria {
             vboxEventos.getChildren().add(label);
 
             scrollEventos.layout();
-            scrollEventos.setVvalue(1.0); // Auto-scroll
+            scrollEventos.setVvalue(1.0);
         });
     }
 
@@ -96,6 +103,8 @@ public class ControladorCafeteria {
                 return "-fx-text-fill: #A94442; -fx-font-weight: bold;";
             case CAMARERO:
                 return "-fx-text-fill: #6B4226;";
+            case BARISTA:
+                return "-fx-text-fill: #2E8B57;";
             case INFO:
             default:
                 return "-fx-text-fill: #000000;";
